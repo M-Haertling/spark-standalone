@@ -1,0 +1,27 @@
+version: "2"
+
+services:
+  spark-leader:
+    build: .
+    image: spark
+    entrypoint: /bin/bash leader
+    ports:
+      - "80:8080"
+      - "5858:5858"
+    volumes:
+      - "spark-leader:/spark"
+  spark-follower1:
+    build: .
+    image: spark
+    entrypoint: /bin/bash worker
+    ports:
+      - "5859:5858"
+    volumes:
+      - "spark-follower:/spark"
+    depends_on:
+      - "spark-leader"
+volumes:
+  spark-leader:
+    driver: local
+  spark-follower:
+    driver: local
