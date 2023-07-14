@@ -5,6 +5,9 @@ services:
     build: .
     image: spark
     entrypoint: /bin/bash leader
+    environment:
+      ENV SPARK_LEADER_PORT: 5858
+      ENV SPARK_LEADER_WEB_PORT: 8080
     ports:
       - "80:8080"
       - "5858:5858"
@@ -14,6 +17,9 @@ services:
     build: .
     image: spark
     entrypoint: /bin/bash worker
+    environment:
+      ENV SPARK_LEADER_PORT: 5858
+      ENV SPARK_LEADER_URL: spark-leader
     ports:
       - "5859:5858"
     volumes:
