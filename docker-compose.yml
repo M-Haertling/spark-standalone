@@ -4,28 +4,40 @@ services:
   spark-leader:
     build: .
     image: spark
+    container_name: spark-leader
     entrypoint: /bin/bash leader
     environment:
-      ENV SPARK_LEADER_PORT: 5858
-      ENV SPARK_LEADER_WEB_PORT: 8080
+      SPARK_LEADER_PORT: 5858
+      SPARK_LEADER_WEB_PORT: 8080
     ports:
-      - "80:8080"
-      - "5858:5858"
+      - "5810:8080"
     volumes:
       - "spark-leader:/spark"
   spark-follower1:
     build: .
     image: spark
+    container_name: spark-follower1
     entrypoint: /bin/bash worker
     environment:
-      ENV SPARK_LEADER_PORT: 5858
-      ENV SPARK_LEADER_URL: spark-leader
-    ports:
-      - "5859:5858"
+      SPARK_LEADER_PORT: 5858
+      SPARK_LEADER_URL: spark-leader
     volumes:
       - "spark-follower:/spark"
     depends_on:
       - "spark-leader"
+  database:
+    image: mysql:latest
+    restart: always
+    container_name: database
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5811:8080
 volumes:
   spark-leader:
     driver: local

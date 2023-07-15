@@ -20,3 +20,8 @@ Docker Compose Setup
 docker compose build
 docker compuse up
 ```
+
+
+```
+pip install -r datagen-requirements.txt
+```
