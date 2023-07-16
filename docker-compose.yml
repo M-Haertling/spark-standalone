@@ -2,7 +2,9 @@ version: "2"
 
 services:
   spark-leader:
-    build: .
+    build:
+      context: .
+      dockerfile: spark.Dockerfile
     image: spark
     container_name: spark-leader
     entrypoint: /bin/bash leader
@@ -14,7 +16,9 @@ services:
     volumes:
       - "spark-leader:/spark"
   spark-follower1:
-    build: .
+    build:
+      context: .
+      dockerfile: spark.Dockerfile
     image: spark
     container_name: spark-follower1
     entrypoint: /bin/bash worker
