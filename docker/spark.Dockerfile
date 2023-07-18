@@ -8,11 +8,10 @@ ENV SPARK_LEADER_PORT=5858
 ENV SPARK_LEADER_WEB_PORT=8080
 ENV SPARK_LEADER_URL=spark-leader
 
-RUN echo "\${SPARK_HOME}/sbin/start-master.sh --port \${SPARK_LEADER_PORT} --webui-port \${SPARK_LEADER_WEB_PORT} & sleep infinity" > leader
-RUN chmod +x leader
+ADD leader.sh /
+RUN chmod +x leader.sh
 
-
-RUN echo "\${SPARK_HOME}/sbin/start-worker.sh spark-leader:\${SPARK_LEADER_PORT} & sleep infinity" > worker
-RUN chmod +x worker
+ADD worker.sh /
+RUN chmod +x worker.sh
 
 #ENTRYPOINT ./sbin/start-slave.sh http://localhost:8080
