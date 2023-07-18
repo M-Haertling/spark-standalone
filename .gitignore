@@ -1,1 +1,2 @@
-spark-*-bin-*.tgz
+spark-*-bin-*
+mysql-connector-*.jar

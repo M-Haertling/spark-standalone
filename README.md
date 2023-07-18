@@ -9,7 +9,7 @@ Every Spark cluster needs a resource controller and one or more workers. Here, w
 
 **Building the Spark Image**
 ```
-docker build --file spark.Dockerfile -t spark
+docker build --file docker/spark.Dockerfile -t spark docker
 ```
 
 The image can be oberved by spinning up a container instance and opening a bash console.
@@ -26,15 +26,15 @@ docker run --name spark-worker1 -d spark ./bin/bash ./worker
 **Docker Compose**
 Alternately, all needed services can be spun up using Docker Compose.
 ```
-docker compose up
+docker compose --project-name spark-standalone --file docker/docker-compose.yml up
 ```
 
 The compose file defines the following services:
 | Service | Description | Webapp |
 | - | - | - |
 | spark-leader | the resource manager for Spark processing | http://localhost:5810/ |
-| spark-follower1 | Spark worker 1 |  |
-| spark-follower2 | Spark worker 2 |  |
+| spark-worker1 | Spark worker 1 | http://localhost:5811/ |
+| spark-worker2 | Spark worker 2 |  |
 | database | a mysql instance |  |
 | adminer | a simple mysql webapp for managing the environment | http://localhost:5811/ |
 
@@ -52,8 +52,17 @@ pip install -r src/datagen-requirements.txt
 python src/datagen.py
 ```
 
-The dummy data should be visible through the mysql adminer interface. There should be a new database created called dummydata, in which there is a dummy_data table that contains randomly generated data.
+The dummy data should be visible through the mysql adminer interface. There should be a new database created called dummydata, in which there is a dummy_data table containing randomly generated data.
 ## Submitting a Spark App
+
+MySQL JDBC Connector
+https://mvnrepository.com/artifact/com.mysql/mysql-connector-j/8.0.33
+
+
 ```
-docker build --file spark-submit.Dockerfile --tag spark-submit .
+docker build --file spark-submit.Dockerfile --tag spark-submit
+
+./spark-submit --master spark://spark-leader:5858 --deploy-mode client
+
+./spark-submit --master spark://spark-leader:5858 --deploy-mode client
 ```

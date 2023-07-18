@@ -16,16 +16,21 @@ services:
       - "5858:5858"
     volumes:
       - "spark-leader:/spark"
-  spark-follower1:
+  spark-worker1:
     build:
       context: .
       dockerfile: spark.Dockerfile
     image: spark
-    container_name: spark-follower1
+    container_name: spark-worker1
     entrypoint: /worker.sh
     environment:
       SPARK_LEADER_PORT: 5858
       SPARK_LEADER_URL: spark-leader
+      SPARK_WORKER_PORT: 5859
+      SPARK_WORKER_WEB_PORT: 5811
+    ports:
+      - "5859:5859"
+      - "5811:5811"
     volumes:
       - "spark-follower:/spark"
     depends_on:
@@ -42,7 +47,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 5811:8080
+      - 5820:8080
 volumes:
   spark-leader:
     driver: local
