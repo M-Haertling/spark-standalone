@@ -35,6 +35,7 @@ def generateRecord() -> (str, str, float, float, int):
     return (fake.name(), fake.address(), random.random()*200000, random.random()*1000000-100000, random.randrange(-100,100))
     
 def insertData(cur: mysql.connector.abstracts.MySQLConnectionAbstract.cursor, numRows: int, commitBatchSize: int):
+    # Prepared statement wasn't working, but I control the inputs and performance is not a concern
     query = """
         INSERT INTO dummy_data(
             name, address, salary, netWorth, happiness
@@ -54,7 +55,7 @@ def insertData(cur: mysql.connector.abstracts.MySQLConnectionAbstract.cursor, nu
             commitCount = 0
 
 with mysql.connector.connect(
-    host="localhost",
+    host="database",
     user="root",
     password="example"
 ) as db:
@@ -63,6 +64,6 @@ with mysql.connector.connect(
         createDatabase(cur)
         createTable(cur)
     with db.cursor() as cur:
-        insertData(cur, numRows=100000, commitBatchSize=1000)
+        insertData(cur, numRows=10000, commitBatchSize=1000)
     
 

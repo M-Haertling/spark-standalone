@@ -10,12 +10,15 @@ services:
     entrypoint: /leader.sh
     environment:
       SPARK_LEADER_PORT: 5858
+      SPARK_LEADER_URL: spark-leader
       SPARK_LEADER_WEB_PORT: 8080
     ports:
       - "5810:8080"
       - "5858:5858"
     volumes:
       - "spark-leader:/spark"
+    stdin_open: true
+    tty: true
   spark-worker1:
     build:
       context: .
@@ -27,6 +30,7 @@ services:
       SPARK_LEADER_PORT: 5858
       SPARK_LEADER_URL: spark-leader
       SPARK_WORKER_PORT: 5859
+      SPARK_WORKER_URL: spark-worker1
       SPARK_WORKER_WEB_PORT: 5811
     ports:
       - "5859:5859"
@@ -46,8 +50,20 @@ services:
   adminer:
     image: adminer
     restart: always
+    container_name: adminer
     ports:
       - 5820:8080
+    stdin_open: true
+    tty: true
+  pyspark-client:
+    build:
+      context: .
+      dockerfile: pyspark.Dockerfile
+    image: pyspark
+    container_name: pyspark-client
+    entrypoint: sleep infinity
+    volumes:
+      - ../:/share:ro
 volumes:
   spark-leader:
     driver: local
