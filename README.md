@@ -35,11 +35,11 @@ docker compose --project-name spark-standalone --file docker/docker-compose.yml 
 The compose file defines the following services:
 | Service | Description | Webapp |
 | - | - | - |
-| spark-leader | the resource manager for Spark processing | http://localhost:5810/ |
-| spark-worker1 | Spark worker 1 | http://localhost:5811/ |
-| spark-worker2 | Spark worker 2 |  |
-| database | a mysql instance |  |
-| adminer | a simple mysql webapp for managing the environment | http://localhost:5811/ |
+| spark-leader | the resource manager for Spark processing | http://localhost:5900/ |
+| spark-worker1 | Spark worker 1 | http://localhost:5901/ |
+| spark-worker2 | Spark worker 2 | http://localhost:5902/ |
+| database | a mysql instance | localhost:3306/ |
+| adminer | a simple mysql webapp for managing the environment | http://localhost:5903/ |
 | pyspark-client | a pre-loaded virtual environment to kick off spark jobs | |
 
 The mysql credentials are:
@@ -47,7 +47,7 @@ The mysql credentials are:
 * Username: admin
 * Password: example
 
-You can validate that the spark cluster and mysql server are running by checking their respective web UIs.
+You can validate that the spark cluster and mysql server are running by checking their respective web UIs. Unfortunately, the embedded links between nodes within the UI do not work outside the docker virtual network.
 
 ## The Virtual Environment
 The pyspark-client container has java and python installed, plus the handfull of python libraries needed for testing. Additionally, the project directory has been mapped to /share. This makes it easy to edit the python scripts locally and run then on the docker network. Any attempt to kick off a job via the exposed spark master port (spark-leader:5858) will fail because the client is expected to open a port and receive communications initiated from the spark cluster. Switching the container network to use the host network does not work for container to host traffic on Windows and Mac due to the vm that Docker actually runs on. 
@@ -64,7 +64,7 @@ cd /share/src
 ### Generating Dummy Data
 The mysql database is a fresh insall. The datagen.py script creates a database with some data to experiment with.
 ```
-python3 src/datagen.py
+python3 /share/src/datagen.py
 ```
 
 The dummy data should be visible through the mysql adminer interface. There should be a new database created called dummydata, in which there is a dummy_data table containing randomly generated data.
@@ -77,5 +77,5 @@ https://mvnrepository.com/artifact/com.mysql/mysql-connector-j/8.0.33
 
 Once the connector is in place, run some tests.
 ```
-python3 spark.py
+python3 /share/src/spark.py
 ```

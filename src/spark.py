@@ -5,7 +5,7 @@
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder \
-    .master("spark://spark-leader:5858") \
+    .master("spark://spark-leader:5800") \
     .appName("TestSpark") \
     .config("spark.jars", "mysql-connector-j-8.0.33.jar") \
     .getOrCreate()
