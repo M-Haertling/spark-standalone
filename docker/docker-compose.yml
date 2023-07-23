@@ -4,8 +4,8 @@ services:
   spark-leader:
     build:
       context: .
-      dockerfile: spark.Dockerfile
-    image: spark
+      dockerfile: pyspark.Dockerfile
+    image: pyspark
     container_name: spark-leader
     entrypoint: /leader.sh
     environment:
@@ -22,8 +22,8 @@ services:
   spark-worker1:
     build:
       context: .
-      dockerfile: spark.Dockerfile
-    image: spark
+      dockerfile: pyspark.Dockerfile
+    image: pyspark
     container_name: spark-worker1
     entrypoint: /worker.sh
     environment:

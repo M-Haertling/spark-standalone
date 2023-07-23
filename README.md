@@ -1,26 +1,29 @@
 # Spark Standalone Cluster
 This is an experimental implementation of a spark standalone cluster.
 
-To promote an understanding of the Spark installation process, a Spark enabled Java image is built manually. This requires the appropriate binaries to be available locally. This keeps image compilation fast if you tweak the image during experimentation as opposed to downloading Spark during image creation. The spark binaries can be downloaded from: https://www.apache.org/dyn/closer.lua/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz
+To promote an understanding of the Spark installation process, a Spark enabled image is built manually. This requires the appropriate binaries to be available locally. This keeps image compilation fast if you tweak the image during experimentation as opposed to downloading Spark during image creation. The spark binaries can be downloaded from: https://www.apache.org/dyn/closer.lua/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz
 
 
 ## The Cluster
-Every Spark cluster needs a resource controller and one or more workers. Here, we use the standalone resource server to managed our cluster. Both the workers and leader use the same image because the singular Spark installation includes all the nessesary binaries for both services.
+Every Spark cluster needs a resource controller and one or more workers. Here, we use the Spark standalone resource server to managed our cluster. The workers and leader use the same image because the singular Spark installation includes all the nessesary binaries for both services. Both openjdk11 and python3 are installed so pyspark will be supported by the cluster. Bash, procps (for ps), and coreutils (for nohup) are installed because they are required by the cluster start scripts included in the Spark install. The baseline image is *alpine* to keep things relatively light.
 
 **Building the Spark Image**
 ```
-docker build --file docker/spark.Dockerfile -t spark docker
+docker build --file docker/pyspark.Dockerfile -t pyspark docker
 ```
 
-The image can be oberved by spinning up a container instance and opening a bash console.
+The image can be explored by spinning up a container instance and opening a shell console. Alpine doesn't have bash installed by default, but its basic predacessor should be sufficient.
 ```
-docker run -it spark ./bin/bash
+docker run -it pyspark bash
+java --version
+python3 --version
+pip3 --version
 ```
 
 Notice, there is no *ENTRYPOINT* definied in the Dockerfile because we want to control which function is kicked off dynamically. Two helper files are created: leader and worker. This makes it relatively simple to spin up a leader and workers.
 ```
-docker run --name spark-leader -p 8080 -p 5858:5858 -d spark ./bin/bash ./leader
-docker run --name spark-worker1 -d spark ./bin/bash ./worker
+docker run --name spark-leader -p 8080 -p 5858:5858 -d pyspark bash ./leader
+docker run --name spark-worker1 -d pyspark bash ./worker
 ```
 
 **Docker Compose**
@@ -51,7 +54,7 @@ The pyspark-client container has java and python installed, plus the handfull of
 
 Open up a terminal and connect to the container:
 ```
-docker exec -it py-client bash
+docker exec -it pyspark-client bash
 ```
 
 The project directory is mounted under share:
