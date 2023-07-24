@@ -28,28 +28,24 @@ spark.sparkContext.setLogLevel("INFO")
 # df = spark.createDataFrame(dataList).createOrReplaceTempView("TEST_VIEW")
 # df = spark.sql("SELECT * FROM TEST_VIEW")
 
-
-spark.read.jdbc(
+    #.option("partitionColumn", "test") \
+    #.option("lowerBound", "test") \
+    #.option("upperBound", "test") \
+df = spark.read \
+    .option("numPartitions", 4) \
+    .option("partitionColumn", "happiness") \
+    .option("lowerBound", 0) \
+    .option("upperBound", 100) \
+    .jdbc(
         url="jdbc:mysql://database:3306/dummydata",
         table="dummy_data",
         properties= {
             "driver":"com.mysql.cj.jdbc.Driver",
             "user": "root",
-            "password": "example",
-            #"query": "select * from dummydata.dummy_data",
-            #"numPartitions": 5,
-            #"fetchsize": 20
+            "password": "example"
         }
-    ).createOrReplaceTempView("people")
+    )
+df.explain()
+df.createOrReplaceTempView("people")
     
 df = spark.sql("SELECT name, salary, happiness FROM people").show(n=100)
-    # df.select(df['name'], df['happiness'])
-    # df.filter(df['happiness'] > 0)
-        
-    #.option("driver","com.mysql.cj.jdbc.Driver") \
-    #.option("user", "root") \
-    #.option("password", "example") \
-    #.option("query", "select * from employee") \
-    #.option("numPartitions", 5) \
-    #.option("fetchsize", 20) \
-    #.load()

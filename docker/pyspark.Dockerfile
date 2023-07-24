@@ -1,7 +1,9 @@
 FROM alpine
 
 RUN apk update
-RUN apk add --update bash python3 openjdk11 curl git unzip py-pip procps coreutils
+RUN apk add --update bash curl git unzip procps coreutils
+RUN apk add --update python3 py-pip
+RUN apk add --update openjdk11
 
 ADD spark-requirements.txt /
 RUN pip3 install -r /spark-requirements.txt

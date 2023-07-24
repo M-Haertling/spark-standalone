@@ -27,25 +27,28 @@ docker run --name spark-worker1 -d pyspark bash ./worker
 ```
 
 **Docker Compose**
+
 Alternately, all needed services can be spun up using Docker Compose.
 ```
 docker compose --project-name spark-standalone --file docker/docker-compose.yml up
 ```
 
 The compose file defines the following services:
-| Service | Description | Webapp |
+| Service | Description | Exposed Interface |
 | - | - | - |
 | spark-leader | the resource manager for Spark processing | http://localhost:5900/ |
 | spark-worker1 | Spark worker 1 | http://localhost:5901/ |
 | spark-worker2 | Spark worker 2 | http://localhost:5902/ |
-| database | a mysql instance | localhost:3306/ |
+| database | a mysql instance | jdbc:mysql://localhost:3306 |
 | adminer | a simple mysql webapp for managing the environment | http://localhost:5903/ |
 | pyspark-client | a pre-loaded virtual environment to kick off spark jobs | |
 
 The mysql credentials are:
-* Server: database
-* Username: admin
-* Password: example
+| Part | Value |
+| - | - |
+| Server | database |
+| Username | admin |
+| Password | example |
 
 You can validate that the spark cluster and mysql server are running by checking their respective web UIs. Unfortunately, the embedded links between nodes within the UI do not work outside the docker virtual network.
 
