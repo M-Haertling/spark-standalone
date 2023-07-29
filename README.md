@@ -46,9 +46,9 @@ The compose file defines the following services:
 The mysql credentials are:
 | Part | Value |
 | - | - |
-| Server | database |
-| Username | admin |
-| Password | example |
+| **Server** | database |
+| **Username** | admin |
+| **Password** | example |
 
 You can validate that the spark cluster and mysql server are running by checking their respective web UIs. Unfortunately, the embedded links between nodes within the UI do not work outside the docker virtual network.
 
@@ -78,7 +78,29 @@ MySQL JDBC Connector
 Download the mysql JDBC connector jar and drop it into the src directory. This will be shipped to the Spark cluster as part of the pyspark process.
 https://mvnrepository.com/artifact/com.mysql/mysql-connector-j/8.0.33
 
-Once the connector is in place, run some tests.
+Once the connector is in place, run a test.
 ```
 python3 /share/src/spark.py
+```
+
+Spark apps can also be deployed through spark-submit. Unfortunately, only YARN based clusters support spark-submit cluster mode:
+```
+spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master spark://spark-leader:5800 \
+  --deploy-mode cluster \
+  --supervise \
+  /share/src/spark.py
+
+Exception in thread "main" org.apache.spark.SparkException: Cluster deploy mode is currently not supported for python applications on standalone clusters.
+```
+
+But client mode can be run without an issue:
+```
+spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master spark://spark-leader:5800 \
+  --deploy-mode client \
+  --jars /share/src/mysql-connector-j-8.0.33.jar \
+  /share/src/spark.py
 ```

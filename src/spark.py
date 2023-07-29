@@ -48,4 +48,18 @@ df = spark.read \
 df.explain()
 df.createOrReplaceTempView("people")
     
-df = spark.sql("SELECT name, salary, happiness FROM people").show(n=100)
+df = spark.sql("""
+    SELECT
+        salary_bucket,
+        AVG(happiness) avg_happiness
+    FROM(
+        SELECT
+            CAST(salary/1000 as INT) salary_bucket, 
+            happiness
+        FROM people
+    )
+    GROUP BY salary_bucket
+    ORDER BY salary_bucket
+""")
+df.explain()
+df.show()

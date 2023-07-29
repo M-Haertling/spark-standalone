@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.18
 
 RUN apk update
 RUN apk add --update bash curl git unzip procps coreutils
